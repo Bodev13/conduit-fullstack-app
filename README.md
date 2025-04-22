@@ -59,9 +59,33 @@ docker-compose down
 
 ## Usage
 
-This will get the conduit app running in a Docker container on your local machine and on the V-Server
+This will get the conduit app running in a Docker container on your local machine and on the V-Server. The build and run process is managed by the docker-compose.yml file.
 
-• Set up .env file and make sure it is added to the .gitignore
+It contains two services and a volume:
+
+• conduit-backend service: builds and starts the conduit backend application
+• conduit-frontend service: builds and starts the conduit frontend application
+• db volume called "backend_data": bound to the conduit backend application's database
+
+### Environments
+
+• Set up .env file and make sure it is added to the .gitignore. Just copy the template.env file to create your own .env by the following command
+
+```bash
+cp template.env .env
+```
+
+| Name                          | Type   | Description                                                        |
+|-------------------------------|--------|--------------------------------------------------------------------|
+| `API_URL`                     | string | Backend API server URL                                             |
+| `ALLOWED_HOSTS`               | list   | List of domains/IPs allowed to access the application              |
+| `SECRET_KEY`                  | string | Django secret key for cryptographic operations                     |
+| `DEBUG`                       | bool   | Enables debug mode (only use in development)                       |
+| `DJANGO_SUPERUSER_USERNAME`  | string | Superuser name used during initial migration                       |
+| `DJANGO_SUPERUSER_EMAIL`     | string | Email address of the Django superuser                              |
+| `DJANGO_SUPERUSER_PASSWORD`  | string | Password for the Django superuser                                  |
+| `FRONTEND_URL`               | list   | List of frontend URLs allowed to communicate with the backend      |
+| `FRONTEND_PORT`              | number | Port where the frontend is running                                 |
 
 • Create secret keys (for .env file)
 

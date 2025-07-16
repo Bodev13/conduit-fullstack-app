@@ -1,38 +1,37 @@
 services:
+  db:
+    image: postgres:14
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
   backend:
     build: ./conduit-backend
-    environment:
-     DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
-     DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
-     DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
-
     volumes:
       - backend_data:/app/db_data
-      - ./conduit-backend/entrypoint.sh:/app/entrypoint.sh
-    restart: unless-stopped
+    restart: on-failure:5
     env_file:
       - .env
     ports:
       - "8000:8000"
-    networks:
-      - conduit_net
+    depends_on:
+    - db
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-
   frontend:
     build: ./conduit-frontend
     ports:
       - "8282:80"
-    networks:
-      - conduit_net
-    restart: unless-stopped
+    restart: on-failure
     env_file:
       - .env
-networks:
-  conduit_net:
 
 volumes:
+  postgres_data:
   backend_data:

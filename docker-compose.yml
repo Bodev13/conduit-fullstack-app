@@ -7,11 +7,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    restart: always
+    restart: on-failure
   backend:
     build: ./conduit-backend
-    volumes:
-      - backend_data:/app/db_data
     restart: on-failure:5
     env_file:
       - .env
@@ -34,4 +32,3 @@ services:
 
 volumes:
   postgres_data:
-  backend_data:

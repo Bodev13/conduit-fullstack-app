@@ -34,9 +34,9 @@ cd conduit-fullstack-app
 git submodule update --init --recursive
 ```
 
-3. Create and set up .env file by following the description below in the section [Environments](#environments)
+3. Create and set up `.env` file by following the description below in the section [Environments](#environments)
 
-4. Copy the `template.env` to your own `.env` and add you cloud VM IP
+4. Copy the `template.env` to your `.env` and add your cloud VM IP address
 
 ```bash
 cp template.env .env
@@ -47,25 +47,25 @@ cp template.env .env
 ```bash
 docker-compose up --build
 ```
-6. Access the Conduit locally
+6. Access the Conduit app locally
 
-• The frontend at
+• FE
 ```bash
 http://localhost:8282
 ```
 
-• The backend at
+• BE
 ```bash
 http://localhost:8000/admin
 ```
 
-7. On your cloud VM at
+7. On your cloud VM
 ```bash
 http://your_cloud_vm_ip:8282
 ```
 8. Stop and delete containers
 ```bash
-docker-compose down
+docker-compose down -v
 ```
 
 ## Usage
@@ -81,7 +81,7 @@ It contains two services:
 
 ### Environments
 
-• Set up `.env` file and make sure it is added to the [.gitignore](./.gitignore). Just copy the template.env file to create your own .env by the following command
+• Set up `.env` file and make sure it is added to the [.gitignore](./.gitignore). Just copy the `template.env` file to create your own `.env` by the following command
 
 ```bash
 cp template.env .env
@@ -99,7 +99,7 @@ cp template.env .env
 | `FRONTEND_URL`               | list   | List of frontend URLs allowed to communicate with the backend      |
 | `FRONTEND_PORT`              | number | Port where the frontend is running                                 |
 
-• Create secret keys (for .env file)
+• Create secret keys (for `.env`)
 
 ```bash
 from django.core.management.utils import get_random_secret_key
@@ -133,6 +133,6 @@ docker-compose logs backend > backend-logs.txt
 You can turn off and rebuild the container with the following commands
 
 ```bash
-docker-compose down
+docker-compose down -v
 docker-compose up --build
 ```

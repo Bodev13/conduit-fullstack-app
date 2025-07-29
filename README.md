@@ -26,15 +26,28 @@ The project is containerized using Docker and orchestrated with Docker Compose.
 ```bash
 git clone --recurse-submodules git@github.com:Bodev13/conduit-fullstack-app.git
 cd conduit-fullstack-app
-````
-2. Create and set up .env file by following the description below in the section [Environments](#environments)
+```
 
-3. Build and start the Conduit Fullstack App container
+2. Update and initialize the submodules
+
+```bash
+git submodule update --init --recursive
+```
+
+3. Create and set up .env file by following the description below in the section [Environments](#environments)
+
+4. Copy the `template.env` to your own `.env` and add you cloud VM IP
+
+```bash
+cp template.env .env
+```
+
+5. Build and start the Conduit Fullstack App container
 
 ```bash
 docker-compose up --build
 ```
-4. Access the Conduit locally
+6. Access the Conduit locally
 
 • The frontend at
 ```bash
@@ -46,11 +59,11 @@ http://localhost:8282
 http://localhost:8000/admin
 ```
 
-5. On your cloud VM at
+7. On your cloud VM at
 ```bash
 http://your_cloud_vm_ip:8282
 ```
-6. Stop and delete containers
+8. Stop and delete containers
 ```bash
 docker-compose down
 ```

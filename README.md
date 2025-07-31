@@ -59,14 +59,6 @@ http://localhost:8282
 http://localhost:8000/admin
 ```
 
-7. On your cloud VM
-```bash
-http://your_cloud_vm_ip:8282
-```
-8. Stop and delete containers
-```bash
-docker-compose down -v
-```
 
 ## Usage
 
@@ -90,7 +82,7 @@ cp template.env .env
 | Name                          | Type   | Description                                                        |
 |-------------------------------|--------|--------------------------------------------------------------------|
 | `API_URL`                     | string | Backend API server URL                                             |
-| `ALLOWED_HOSTS`               | list   | List of domains/IPs allowed to access the application              |
+| `ALLOWED_HOSTS`               | list   | List of host/domain names this Django site can serve              |
 | `SECRET_KEY`                  | string | Django secret key for cryptographic operations                     |
 | `DEBUG`                       | bool   | Enables debug mode (only use in development)                       |
 | `DJANGO_SUPERUSER_USERNAME`  | string | Superuser name used during initial migration                       |
@@ -125,12 +117,25 @@ API: http://your_server_ip:8000/admin
 ## Logs
 You can save logs using
 
+BE logs
 ```bash
 docker-compose logs backend > backend-logs.txt
 ```
 
+FE logs
+```bash
+docker-compose logs frontend > frontend-logs.txt
+```
+
+All logs
+```bash
+docker-compose logs > all-logs.txt
+```
+
 ## Rebuilding containers
 You can turn off and rebuild the container with the following commands
+
+Bare in mind that `-v` by the command below will delete all volumes bound in the `docker-compose`, which is not the best practice in production environment. For production you can use the command without `-v`
 
 ```bash
 docker-compose down -v

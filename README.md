@@ -145,7 +145,7 @@ docker-compose up --build
 
 ## CI/CD Deployment
 
-This project uses GitHub Actions to automate the deployment of the Conduit Fullstack App to a Cloud VM. The CI/CD workflow runs automatically whenever you push to the deployment branch (cicd-setup) and handles the following steps
+This project uses GitHub Actions to automate the deployment of the Conduit Fullstack App to a Cloud VM. The CI/CD workflow runs automatically whenever you push to the deployment branch (`cicd-actions-build`) and handles the following steps
 
 • Checkout repository and submodules
 
@@ -154,7 +154,7 @@ The workflow clones the repository along with the backend and frontend submodule
 • Build Docker images
 
 Backend and frontend services are built into Docker images.
-Environment variables from .env are passed as build arguments
+Environment variables from `.env` are passed as build arguments
 
 • Push images to GitHub Container Registry (GHCR)
 
@@ -163,8 +163,8 @@ The workflow pushes the built Docker images to the registry for storage and depl
 • Deploy to Cloud VM via SSH
 
 - The workflow connects to your Cloud VM using a secure SSH key stored in GitHub Secrets
-- It navigates to the project directory on the VM, stops any running containers, and starts the services in detached mode using docker-compose up -d
-- If any errors occur, the workflow stops automatically (set -e).
+- It navigates to the project directory on the VM, stops any running containers, and starts the services in detached mode using `docker compose up -d`
+- If any errors occur, the workflow stops automatically (`set -e`).
 Required GitHub Secrets
 
 To make the deployment work, the following secrets must be created in your repository settings
@@ -177,6 +177,6 @@ GITHUB_TOKEN	Default GitHub Actions token (used for GHCR login)
 
 ### How to trigger deployment
 
-Deployment happens automatically when you push changes to the branch `cicd-setup`
+Deployment happens automatically when you push changes to the branch `cicd-actions-build`
 
 You can also trigger the workflow manually from the `Actions tab` in GitHub.

@@ -1,5 +1,9 @@
 name: Conduit Deployment via GH Actions Build
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:

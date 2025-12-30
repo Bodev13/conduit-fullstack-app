@@ -35,7 +35,7 @@ jobs:
           context: ./conduit-backend
           file: ./conduit-backend/Dockerfile
           push: true
-          tags: ghcr.io/YOUR_USERNAME/conduit-backend:latest
+          tags: ghcr.io/bodev13/conduit-backend:latest
           build-args: |
             ENV_FILE=.env
 

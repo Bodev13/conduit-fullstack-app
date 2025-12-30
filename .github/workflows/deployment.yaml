@@ -27,7 +27,7 @@ jobs:
             set -e
             # Going to the project directory on cloud VM
             cd /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
-            git pull
+            git pull origin cicd-setup
             git submodule update --init --recursive
             docker-compose down
             docker-compose up -d --build

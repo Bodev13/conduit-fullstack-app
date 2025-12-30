@@ -1,0 +1,57 @@
+name: Conduit Deployment via GH Actions Build
+
+on:
+  push:
+    branches:
+      - cicd-actions-build # test branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clone repository with submodules
+      - name: Checkout repository with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # 2. Setup Docker Buildx (build locally in Actions)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Build backend & frontend images and push to registry
+      - name: Build & push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./conduit-backend
+          file: ./conduit-backend/Dockerfile
+          push: true
+          tags: ghcr.io/bodev13/conduit-backend:latest
+          build-args: |
+            ENV_FILE=.env
+
+      - name: Build & push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./conduit-frontend
+          file: ./conduit-frontend/Dockerfile
+          push: true
+          tags: ghcr.io/bodev13/conduit-frontend:latest
+          build-args: |
+            ENV_FILE=.env
+
+      # 4. Deploy to Cloud VM (only pull + up -d)
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
+            git pull origin cicd-actions-build
+            git submodule update --init --recursive
+            docker-compose pull
+            docker-compose up -d

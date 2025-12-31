@@ -7,7 +7,7 @@ The project is containerized using Docker and orchestrated with Docker Compose.
 
 ### Prerequisites
 
-- Docker & Docker Compose installed
+- Docker (with Docker Compose plugin) installed
 
 
 ## Table of Contents
@@ -46,7 +46,7 @@ cp template.env .env
 5. Build and start the Conduit Fullstack App container
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 6. Access the Conduit app locally
 
@@ -101,7 +101,7 @@ print(get_random_secret_key())
 • Run the app
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 • Interact with your app
@@ -120,17 +120,17 @@ You can save logs using
 
 BE logs
 ```bash
-docker-compose logs backend > backend-logs.txt
+docker compose logs backend > backend-logs.txt
 ```
 
 FE logs
 ```bash
-docker-compose logs frontend > frontend-logs.txt
+docker compose logs frontend > frontend-logs.txt
 ```
 
 All logs
 ```bash
-docker-compose logs > all-logs.txt
+docker compose logs > all-logs.txt
 ```
 
 ## Rebuilding containers
@@ -139,8 +139,8 @@ You can turn off and rebuild the container with the following commands
 Bare in mind that `-v` by the command below will delete all volumes bound in the `docker-compose`, which is not the best practice in production environment. For production you can use the command without `-v`
 
 ```bash
-docker-compose down -v
-docker-compose up --build
+docker compose down -v
+docker compose up --build
 ```
 
 ## CI/CD Deployment
@@ -169,11 +169,12 @@ Required GitHub Secrets
 
 To make the deployment work, the following secrets must be created in your repository settings
 
-Name	Description
-SERVER_IP	The IP address of your Cloud VM
-SERVER_USER	SSH username for your Cloud VM
-SERVER_SSH_KEY	Private SSH key used to connect to the VM
-GITHUB_TOKEN	Default GitHub Actions token (used for GHCR login)
+| Name              | Type   | Description                                                     |
+|-------------------|--------|-----------------------------------------------------------------|
+| `SERVER_IP`       | string | Public IP address of the Cloud VM                               |
+| `SERVER_USER`     | string | SSH username for accessing the Cloud VM                         |
+| `SERVER_SSH_KEY`  | string | Private SSH key used by GitHub Actions to connect to the VM     |
+| `GITHUB_TOKEN`    | string | Default GitHub Actions token used to authenticate with GHCR    |
 
 ### How to trigger deployment
 

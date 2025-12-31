@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     branches:
-      - cicd-actions-build # test branch
+      - cicd-actions-build
 
 jobs:
   deploy:

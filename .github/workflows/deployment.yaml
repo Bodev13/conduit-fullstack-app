@@ -16,6 +16,7 @@ jobs:
 
     steps:
       # 1. Checkout repository
+
       - name: Checkout repository
         uses: actions/checkout@v6
 
@@ -35,8 +36,8 @@ jobs:
       - name: Build & push backend image
         uses: docker/build-push-action@v5
         with:
-          context: ./conduit-backend
-          file: ./conduit-backend/Dockerfile
+          context: .
+          file: conduit-backend/Dockerfile
           push: true
           tags: |
             ghcr.io/bodev13/conduit-backend:latest
@@ -44,12 +45,14 @@ jobs:
           build-args: |
             ENV_FILE=.env
 
+      - name: List repository files
+        run: ls -R
       # 5. Build & push frontend image with multiple tags
       - name: Build & push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./conduit-frontend
-          file: ./conduit-frontend/Dockerfile
+          context: .
+          file: conduit-frontend/Dockerfile
           push: true
           tags: |
             ghcr.io/bodev13/conduit-frontend:latest

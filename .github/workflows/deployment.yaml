@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Clone repository with submodules
-      - name: Checkout repository with submodules
-        uses: actions/checkout@v5
+      # 1. Clone repository
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -41,6 +41,7 @@ jobs:
           file: ./conduit-backend/Dockerfile
           push: true
           tags: ghcr.io/bodev13/conduit-backend:latest
+            ghcr.io/bodev13/conduit-backend:${{ github.sha }}
           build-args: |
             ENV_FILE=.env
 
@@ -51,6 +52,7 @@ jobs:
           file: ./conduit-frontend/Dockerfile
           push: true
           tags: ghcr.io/bodev13/conduit-frontend:latest
+            ghcr.io/bodev13/conduit-frontend:${{ github.sha }}
           build-args: |
             ENV_FILE=.env
 

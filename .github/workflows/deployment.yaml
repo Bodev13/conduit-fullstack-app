@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - cicd-actions-build
+      - main
 
 jobs:
   deploy:
@@ -16,7 +17,7 @@ jobs:
     steps:
       # 1. Clone repository with submodules
       - name: Checkout repository with submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
 

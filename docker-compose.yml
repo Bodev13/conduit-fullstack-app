@@ -8,9 +8,9 @@ services:
     ports:
       - "5432:5432"
     restart: on-failure
-
   backend:
-    image: ghcr.io/bodev13/conduit-backend:latest
+    build: ./conduit-backend
+    restart: on-failure:5
     env_file:
       - .env
     ports:
@@ -22,15 +22,13 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    restart: on-failure:5
-
   frontend:
-    image: ghcr.io/bodev13/conduit-frontend:latest
-    env_file:
-      - .env
+    build: ./conduit-frontend
     ports:
       - "8282:80"
     restart: on-failure
+    env_file:
+      - .env
 
 volumes:
   postgres_data:

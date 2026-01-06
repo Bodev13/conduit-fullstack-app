@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     branches:
-      - main
+      #- main
       - cicd-actions-build
 
 jobs:
@@ -36,12 +36,12 @@ jobs:
       - name: Build & push backend image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./conduit-backend
           file: ./conduit-backend/Dockerfile
           push: true
           tags: |
             ghcr.io/bodev13/conduit-backend:latest
-            ghcr.io/bodev13/conduit-backend:${{ github.sha }}
+          # ghcr.io/bodev13/conduit-backend:${{ github.sha }}
           build-args: |
             ENV_FILE=.env
 
@@ -51,12 +51,12 @@ jobs:
       - name: Build & push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./conduit-frontend
           file: ./conduit-frontend/Dockerfile
           push: true
           tags: |
             ghcr.io/bodev13/conduit-frontend:latest
-            ghcr.io/bodev13/conduit-frontend:${{ github.sha }}
+          #  ghcr.io/bodev13/conduit-frontend:${{ github.sha }}
           build-args: |
             ENV_FILE=.env
 

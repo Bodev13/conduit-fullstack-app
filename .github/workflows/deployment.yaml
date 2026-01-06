@@ -7,84 +7,56 @@ permissions:
 on:
   push:
     branches:
-      #- main
+      - main
       - cicd-actions-build
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
-
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # 2. Setup Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Create .env locally
+        run: |
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" > .env
+          echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
 
-      # 3. Login to GitHub Container Registry
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" > .env
+          echo "FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}" >> .env
+          echo "API_URL=${{ secrets.API_URL }}" >> .env
 
-      # 4. Build & push backend image with multiple tags
-      - name: Build & push backend image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./conduit-fullstack-app/conduit-backend/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/bodev13/conduit-backend:latest
-          # ghcr.io/bodev13/conduit-backend:${{ github.sha }}
-          build-args: |
-            ENV_FILE=.env
-
-      - name: List repository files
-        run: ls -R
-      # 5. Build & push frontend image with multiple tags
-      - name: Build & push frontend image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./conduit-fullstack-app/conduit-frontend/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/bodev13/conduit-frontend:latest
-          #  ghcr.io/bodev13/conduit-frontend:${{ github.sha }}
-          build-args: |
-            ENV_FILE=.env
-
-      # 6. Create .env on server from GitHub Secrets
-      - name: Create .env on server
+      - name: Create server directories
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
-            cd /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
-            echo "API_URL=${{ secrets.API_URL }}" > .env
-            echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-            echo "DEBUG=${{ secrets.DEBUG }}" >> .env
-            echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env
-            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env
-            echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env
-            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
-            echo "FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}" >> .env
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
-            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
-            chmod 600 .env
+            mkdir -p /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app/backend
+            mkdir -p /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app/frontend
+
+      - name: Upload config to server
+        uses: appleboy/scp-action@v0.1.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: |
+            docker-compose.yaml
+            .env
+          target: /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v0.1.6
@@ -93,7 +65,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
             cd /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
+            docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin <<< ${{ secrets.GITHUB_TOKEN }}
             docker compose pull
-            docker compose up -d
+            docker compose --env-file backend.env up -d --remove-orphans

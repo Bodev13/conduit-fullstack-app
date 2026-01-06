@@ -36,8 +36,8 @@ jobs:
       - name: Build & push backend image
         uses: docker/build-push-action@v5
         with:
-          context: ./conduit-backend
-          file: ./conduit-backend/Dockerfile
+          context: .
+          file: ./conduit-fullstack-app/conduit-backend/Dockerfile
           push: true
           tags: |
             ghcr.io/bodev13/conduit-backend:latest
@@ -51,8 +51,8 @@ jobs:
       - name: Build & push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./conduit-frontend
-          file: ./conduit-frontend/Dockerfile
+          context: .
+          file: ./conduit-fullstack-app/conduit-frontend/Dockerfile
           push: true
           tags: |
             ghcr.io/bodev13/conduit-frontend:latest

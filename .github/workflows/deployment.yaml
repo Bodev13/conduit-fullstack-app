@@ -86,9 +86,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: |
-            docker-compose.yml
-            env.prod
+          source: docker-compose.yml, env.prod
           target: /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
 
       # 8. Deploy to Cloud VM (only pull + up -d)

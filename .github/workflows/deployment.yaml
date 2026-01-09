@@ -40,9 +40,8 @@ jobs:
           context: ./conduit-backend
           file: ./conduit-backend/Dockerfile
           push: true
-          tags:
-            - ghcr.io/bodev13/conduit-backend:latest
-            - ghcr.io/bodev13/conduit-backend:${{ github.sha }}
+          tags: ghcr.io/bodev13/conduit-backend:latest
+            ghcr.io/bodev13/conduit-backend:${{ github.sha }}
           build-args: |
             ENV_FILE=.env
 
@@ -53,9 +52,8 @@ jobs:
           context: ./conduit-frontend
           file: ./conduit-frontend/Dockerfile
           push: true
-          tags:
-            - ghcr.io/bodev13/conduit-frontend:latest
-            - ghcr.io/bodev13/conduit-frontend:${{ github.sha }}
+          tags: ghcr.io/bodev13/conduit-frontend:latest
+            ghcr.io/bodev13/conduit-frontend:${{ github.sha }}
           build-args: |
             ENV_FILE=.env
 

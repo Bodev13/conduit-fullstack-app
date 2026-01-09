@@ -9,7 +9,7 @@ services:
       - "5432:5432"
     restart: on-failure
   backend:
-    image: ghcr.io/bodev13/conduit-backend:<SHA>
+    image: ghcr.io/bodev13/conduit-backend:latest
     restart: on-failure:5
     env_file:
       - .env
@@ -23,7 +23,7 @@ services:
         max-size: "10m"
         max-file: "3"
   frontend:
-    image: ghcr.io/bodev13/conduit-frontend:<SHA>
+    image: ghcr.io/bodev13/conduit-frontend:latest
     ports:
       - "8282:80"
     restart: on-failure

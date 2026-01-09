@@ -99,5 +99,7 @@ jobs:
           script: |
             cd /home/${{ secrets.SERVER_USER }}/conduit-fullstack-app
             mv env.prod .env
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             docker compose pull
-            docker compose up -d
+            docker compose --env-file .env up -d --remove-orphans
+            docker image prune -f

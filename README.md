@@ -145,27 +145,34 @@ docker compose up --build
 
 ## CI/CD Deployment
 
-This project uses GitHub Actions to automate the deployment of the Conduit Fullstack App to a Cloud VM. The CI/CD workflow runs automatically whenever you push to the deployment branch (`cicd-actions-build`) and handles the following steps
+This project uses GitHub Actions to automate the deployment of the Conduit Fullstack App to a Cloud VM. The CI/CD workflow runs automatically whenever you push to the deployment branch (`cicd-actions-build` or `main`) and handles the following steps
 
-• Checkout repository and submodules
+- Checkout repository and submodules
 
 The workflow clones the repository along with the backend and frontend submodules
 
-• Build Docker images
+- Build Docker images on GitHub Actions
 
-Backend and frontend services are built into Docker images.
-Environment variables from `.env` are passed as build arguments
+• Backend and frontend services are built into Docker images
+• Environment variables from `.env` are passed as build arguments
+• Each image is tagged with:
 
-• Push images to GitHub Container Registry (GHCR)
+  • `latest` → convenient for staging or quick updates
+  • `${{ github.sha }}` → immutable, tied to the specific commit (recommended for production)
 
-The workflow pushes the built Docker images to the registry for storage and deployment
+- Push images to GitHub Container Registry (GHCR)
 
-• Deploy to Cloud VM via SSH
+The workflow pushes the images to the GHCR so they can be pulled by your Cloud VM
 
-- The workflow connects to your Cloud VM using a secure SSH key stored in GitHub Secrets
-- It navigates to the project directory on the VM, stops any running containers, and starts the services in detached mode using `docker compose up -d`
-- If any errors occur, the workflow stops automatically (`set -e`).
-Required GitHub Secrets
+- Deploy to Cloud VM via SSH
+
+• Connects to the VM using a secure SSH key from GitHub Secrets
+• It navigates to the project directory on the VM and prepares the environment
+• `set -e` ensures that if any command fails, the workflow stops automatically
+`--remove-orphans` deletes containers that are no longer defined in your docker-compose.yml
+`docker image prune -f` cleans up unused images to prevent disk clutter
+
+- Required GitHub Secrets
 
 To make the deployment work, the following secrets must be created in your repository settings
 

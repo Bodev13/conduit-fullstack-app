@@ -101,5 +101,5 @@ jobs:
             mv env.prod .env
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             docker compose pull
-            docker compose --env-file .env up -d --remove-orphans
             docker image prune -f
+            docker compose --env-file .env up -d --remove-orphans
